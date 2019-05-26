@@ -1,6 +1,9 @@
 from flask import Flask, make_response, request
-import cache
+from cache import Cache
 app = Flask(__name__)
+
+
+cache = Cache()
 
 @app.route('/get/<string:filename>')
 def get(filename):
