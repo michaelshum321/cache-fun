@@ -9,7 +9,7 @@ def testWrite1():
   hasher = hashlib.sha256()
   hasher.update(data)
   expect = hasher.hexdigest()
-  c = Cache()
+  c = Cache('../testtarget/')
   actual = c.write(data)
   assert expect == actual
 
@@ -18,7 +18,7 @@ def testWriteSame():
   hasher = hashlib.sha256()
   hasher.update(data)
   expected = hasher.hexdigest()
-  c = Cache()
+  c = Cache('../testtarget/')
   actual = c.write(data)
   assert expected == actual
   actual = c.write(data)
@@ -28,14 +28,14 @@ def testWriteSame():
 
 def testReadGood():
   data = b'goodies'
-  c = Cache()
+  c = Cache('../testtarget/')
   filename = c.write(data)
   actual = c.read(filename)
   assert actual == data
 
 def testReadBad():
   data = b'test123'
-  c = Cache()
+  c = Cache('../testtarget/')
   actual = c.read('')
   assert actual == None
 
