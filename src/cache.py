@@ -23,7 +23,9 @@ class Cache:
         f.flush()
         mm = mmap.mmap(f.fileno(), 0)
         mm.flush()
-        mm.write(''.join(map(chr, data)))
+        bytesToWrite = ''.join(map(chr,data))
+        print 'bytes' + bytesToWrite
+        mm.write(bytesToWrite)
         mm.close()
     return filename
 
