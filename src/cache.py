@@ -18,14 +18,21 @@ class Cache:
     filepath = self.path+'/'+filename
     if not os.path.isfile(filepath):
       # write file !!
-      with open(filepath, 'w') as f:
+      # f = os.open(filepath, os.O_CREAT|os.O_WRONLY)
+      # then fdopen, write emtpy
+      # close...
+
+      #mmap
+      with open(filepath, 'w+b') as f:
         f.write(len(data)*b'\0')
         f.flush()
-        mm = mmap.mmap(f.fileno(), 0)
+        mm = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_WRITE)
         mm.flush()
         bytesToWrite = ''.join(map(chr,data))
-        print 'bytes' + bytesToWrite
-        mm.write(bytesToWrite)
+        print('bytesWritten')
+        print(bytesToWrite)
+        mm.write(data)
+        mm.flush()
         mm.close()
     return filename
 
@@ -34,9 +41,9 @@ class Cache:
     if not os.path.isfile(filepath):
       return None
     ret = None
-    with open(filepath,'r') as f:
-      mm = mmap.mmap(f.fileno(), 0)
-      ret = bytearray(mm.read(mm.size()))
+    with open(filepath,'r+b') as f:
+      mm = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
+      ret = mm.read(mm.size())
       mm.close()
 
     return ret

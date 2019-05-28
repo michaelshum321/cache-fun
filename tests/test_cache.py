@@ -18,9 +18,11 @@ def testWrite1():
   assert expect == actual
 
   # check contents of file
-  with open(testFolderPath+'/'+actual, 'r') as f:
+  with open(testFolderPath+'/'+actual, 'r+b') as f:
     actual = f.read(len(data))
-  assert data == actual
+  print('actual')
+  print(actual)
+  assert bytearray(data) == bytearray(actual)
 
 def testWriteSame():
   data = b'testing'
@@ -31,33 +33,38 @@ def testWriteSame():
   actual = c.write(data)
   assert expected == actual
   # check contents of file
-  with open(testFolderPath+'/'+actual, 'r') as f:
+  with open(testFolderPath+'/'+actual, 'r+b') as f:
     actual = f.read(len(data))
-  assert actual == data
+  assert bytearray(actual) == bytearray(data)
 
   actual = c.write(data)
   assert expected == actual
   # check contents of file
-  with open(testFolderPath+'/'+actual, 'r') as f:
+  with open(testFolderPath+'/'+actual, 'r+b') as f:
     actual = f.read(len(data))
-
+  assert bytearray(actual) == bytearray(data)
 
 def testReadGood():
   data = b'goodies'
   c = Cache(testFolderPath)
   filename = c.write(data)
   actual = c.read(filename)
-  assert actual == data
+  assert bytearray(actual) == bytearray(data)
 
 def testReadBad():
   data = b'test123'
   c = Cache(testFolderPath)
   actual = c.read('')
-  assert actual == None
+  assert actual is None
 
   hashed = c.write(data)
   actual = c.read(hashed[:-1]+'q')
-  assert actual == None
+  assert actual is None
 
+def main():
+  testWrite1()
+  testWriteSame()
+  testReadGood()
+  testReadBad()
 
-
+main()
