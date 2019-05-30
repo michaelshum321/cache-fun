@@ -1,7 +1,4 @@
-import os
-import sys
-sys.path.append(os.path.abspath('../src/'))
-from cache import Cache
+from cachefun.cache import Cache
 import hashlib
 
 # do not put last folder's /, i.e. no foldername/. just foldername
