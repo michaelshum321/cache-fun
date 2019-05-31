@@ -3,7 +3,7 @@ import time
 import hashlib
 
 def writeALot():
-  c = Cache('../target_tests')
+  c = Cache('./target_tests')
   total = 0
   hasher = hashlib.sha256()
   for i in range(0,1000):
