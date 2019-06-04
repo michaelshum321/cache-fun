@@ -1,7 +1,7 @@
 from cachefun.cache import Cache
 import time
 import hashlib
-
+import cProfile
 def writeALot():
   c = Cache('./target_tests')
   total = 0
@@ -17,3 +17,4 @@ def writeALot():
   print('totalTime:' + str(total))
 
 writeALot()
+#cProfile.run('writeALot()')

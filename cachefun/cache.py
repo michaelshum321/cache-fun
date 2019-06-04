@@ -1,4 +1,5 @@
-import hashlib
+#import hashlib
+import xxhash
 import mmap
 import os
 class Cache:
@@ -12,23 +13,19 @@ class Cache:
       os.makedirs(path)
 
   def write(self, data):
-    hasher = hashlib.sha256()
+    hasher = xxhash.xxh64()
+    #hasher = hashlib.sha256()
     hasher.update(data)
     filename = hasher.hexdigest()
     filepath = self.path+'/'+filename
     if not os.path.isfile(filepath):
-      # write file !!
-      # f = os.open(filepath, os.O_CREAT|os.O_WRONLY)
-      # then fdopen, write emtpy
-      # close...
-
-      #mmap
+      # write file
       with open(filepath, 'w+b') as f:
         f.write(len(data)*b'\0')
         f.flush()
         mm = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_WRITE)
         mm.flush()
-        bytesToWrite = ''.join(map(chr,data))
+        # bytesToWrite = ''.join(map(chr,data))
         #print('bytesWritten')
         #print(bytesToWrite)
         mm.write(data)
