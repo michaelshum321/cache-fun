@@ -1,6 +1,5 @@
 import hashlib
-
-
+import xxhash
 
 class Cache:
 
@@ -8,7 +7,8 @@ class Cache:
     self.files = {}
 
   def write(self, data):
-    hasher = hashlib.sha256()
+    #hasher = hashlib.sha256()
+    hasher = xxhash.xxh64()
     hasher.update(data)
     filename = hasher.hexdigest()
     self.files[filename] = data
