@@ -1,12 +1,14 @@
 from cachefun.cache import Cache
-import hashlib
+#import hashlib
+import xxhash
 
 # do not put last folder's /, i.e. no foldername/. just foldername
-testFolderPath = '../target_tests'
+testFolderPath = './target_tests'
 
 def testWrite1():
   data = b'hellllloooo'
-  hasher = hashlib.sha256()
+  #hasher = hashlib.sha256()
+  hasher = xxhash.xxh64()
   hasher.update(data)
   expect = hasher.hexdigest()
   c = Cache(testFolderPath)
@@ -23,7 +25,9 @@ def testWrite1():
 
 def testWriteSame():
   data = b'testing'
-  hasher = hashlib.sha256()
+
+  hasher = xxhash.xxh64()
+  #hasher = hashlib.sha256()
   hasher.update(data)
   expected = hasher.hexdigest()
   c = Cache(testFolderPath)

@@ -12,12 +12,12 @@ class Cache:
     if not os.path.exists(path):
       os.makedirs(path)
 
-  def write(self, data):
+  def write(self, data, filename):
     hasher = xxhash.xxh64()
     #hasher = hashlib.sha256()
     hasher.update(data)
-    filename = hasher.hexdigest()
-    filepath = self.path+'/'+filename
+    hashed = hasher.hexdigest()
+    filepath = self.path+'/'+hashed
     if not os.path.isfile(filepath):
       # write file
       with open(filepath, 'w+b') as f:
@@ -31,16 +31,17 @@ class Cache:
         mm.write(data)
         mm.flush()
         mm.close()
+      self.files[hashed] = filename
     return filename
 
   def read(self, hashStr):
     filepath = self.path+'/'+hashStr
     if not os.path.isfile(filepath):
-      return None
+      return None, None
     ret = None
     with open(filepath,'r+b') as f:
       mm = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
       ret = mm.read(mm.size())
       mm.close()
-
-    return ret
+    filename = self.files[hashStr]
+    return ret,filename
