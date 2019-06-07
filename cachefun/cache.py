@@ -11,8 +11,12 @@ class Cache:
     self.path = path
     if not os.path.exists(path):
       os.makedirs(path)
-
+    fsStats = os.statvfs()
+    self.freeSpace = fsStats.f_bsize*fsStats.f_bavail
+    self.blkSize = fsStats.f_bsize
   def write(self, data, filename):
+    if self.freeSpace - len(data) < self.blkSize:
+      print("NOT ENOUGH SPACE!!!")
     hasher = xxhash.xxh64()
     #hasher = hashlib.sha256()
     hasher.update(data)
@@ -32,6 +36,7 @@ class Cache:
         mm.flush()
         mm.close()
       self.files[hashed] = filename
+    self.freeSpace -= len(data)
     return filename
 
   def read(self, hashStr):
