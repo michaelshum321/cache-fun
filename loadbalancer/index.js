@@ -2,8 +2,8 @@ const express = require('express')
 const axios = require('axios')
 const xxhash = require('xxhash')
 const app = express()
-const port = 8090
-const cacheUrl = 'http://localhost:8080'
+const port = process.env.PORT || 8090
+const cacheUrl = process.env.CACHE_URL || 'http://localhost:8080'
 
 const files = {}
 
@@ -13,7 +13,7 @@ app.get('/get', (req, res) => {
   if (!id) {
     res.status(400).end({error:'no id given'})
   }
-  
+
   // check if exists
   if (!(id in hashedFiles)) {
     res.status(404).send()
@@ -21,7 +21,7 @@ app.get('/get', (req, res) => {
   // if exists, fetch from cache
   axios.get(cacheUrl+'/get/'+id, {timeout:10000})
     .then((response) => {
-      // TODO parse err in cache response ? 
+      // TODO parse err in cache response ?
       res.send(response.data)
     })
     .catch((err) => {
@@ -45,7 +45,7 @@ app.post('/save',(req,res) => {
     return
   }
   // post to cache
-  axios.post(cacheUrl+'/save/'+hash,data)
+  axios.post(cacheUrl+'/save/'+hash,data,{timeout:10000})
     .then(() => {
       files[hash] = true
       res.send({id:hash})
@@ -53,7 +53,7 @@ app.post('/save',(req,res) => {
     .catch((err) => {
       console.log(err);
       res.status(400).send({error:'cache request failed'})
-    }) 
+    })
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

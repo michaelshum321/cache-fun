@@ -24,3 +24,9 @@ def save():
   if ret is None:
     return ''
   return ret
+
+if __name__ == '__main__':
+  port = os.environ['PORT']
+  if not port:
+    port = 8080
+  app.run(host='0.0.0.0', port=port )
