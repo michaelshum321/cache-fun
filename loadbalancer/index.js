@@ -1,12 +1,13 @@
 const express = require('express')
 const axios = require('axios')
-const xxhash = require('xxhash')
+const xxhash = require('xxhashjs')
 const app = express()
 const port = process.env.PORT || 8090
 const cacheUrl = process.env.CACHE_URL || 'http://localhost:8080'
-const seed = 0x13371337
+const seed = 0x1337
 const files = {}
 
+app.use(express.json())
 // TODO: handle not in cache
 app.get('/get', (req, res) => {
   const id = req.query.id
@@ -28,7 +29,6 @@ app.get('/get', (req, res) => {
       return
     })
     .catch((err) => {
-      console.log(err)
       res.status(400).json({error:'cache request failed'})
       return
     })
@@ -43,9 +43,10 @@ app.post('/save',(req,res) => {
     return
   }
   // hash
-  const buf = Buffer.from(data)
-  const hash = xxhash.hash64(buf,seed,'hex')
-  console.log('hash',hash)
+
+  const hasher = xxhash.h64(seed)
+  const hash = hasher.update(JSON.stringify(data)).digest().toString(16)
+  console.log('hash',typeof(hash),hash)
   if (hash in files) {
     res.send({id:hash})
     return
@@ -57,11 +58,10 @@ app.post('/save',(req,res) => {
       res.send({id:hash})
     })
     .catch((err) => {
-      console.log(err);
       res.status(400).json({error:'cache request failed'})
     })
 })
 
-app.use(express.json())
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
