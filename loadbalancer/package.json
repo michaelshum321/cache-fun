@@ -12,5 +12,8 @@
     "axios": "^0.19.0",
     "express": "^4.17.1",
     "xxhashjs": "^0.2.2"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0"
   }
 }
